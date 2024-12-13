@@ -2,14 +2,18 @@ import { Scene } from 'phaser';
 import {Utils} from "../Utils.js";
 
 export class ClickerGame extends Scene {
+    
+    score = 0;
+    coins = [];
+    scoreText = null;
+    timeText = null;
+    timer = null;
+    
     constructor() {
         super('ClickerGame');
     }
 
     create() {
-        this.score = 0;
-        this.coins = [];
-
         this.add.image(512, 384, 'background');
 
         this.scoreText = this.add.text(32, 32, 'Coins: 0', Utils.textMedium).setDepth(1);
@@ -31,10 +35,9 @@ export class ClickerGame extends Scene {
     }
 
     dropCoin() {
-        const x = Phaser.Math.Between(128, 896);
-        const y = Phaser.Math.Between(0, -400);
-
-        const coin = this.physics.add.sprite(x, y, 'coin').play('rotate');
+        let x = Phaser.Math.Between(128, 896);
+        let y = Phaser.Math.Between(0, -400);
+        let coin = this.physics.add.sprite(x, y, 'coin').play('rotate');
 
         coin.setVelocityX(Phaser.Math.Between(-400, 400));
         coin.setCollideWorldBounds(true);
@@ -62,23 +65,20 @@ export class ClickerGame extends Scene {
 
     gameOver() {
         this.coins.forEach((coin) => {
-
             if (coin.active) {
                 coin.setVelocity(0, 0);
                 coin.play('vanish');
             }
-
         });
 
         this.input.off('gameobjectdown');
         
-        const highscore = this.registry.get('highscore');
+        let highscore = this.registry.get('highscore');
 
         if (this.score > highscore) {
             this.registry.set('highscore', this.score);
         }
-
-        //  Swap to the GameOver scene after a 2-second delay
+        
         this.time.delayedCall(2000, () => this.scene.start('GameOver'));
     }
 }

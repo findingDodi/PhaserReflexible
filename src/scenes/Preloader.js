@@ -7,7 +7,6 @@ export class Preloader extends Scene {
 
     init() {
         this.add.image(512, 384, 'preloader');
-
     }
 
     preload() {
@@ -20,7 +19,7 @@ export class Preloader extends Scene {
 
     create() {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-
+        
         this.anims.create({
             key: 'rotate',
             frames: this.anims.generateFrameNames('coin', { prefix: 'coin_', start: 1, end: 7, zeroPad: 2 }),
