@@ -15,7 +15,7 @@ export class MainMenu extends Scene {
         this.instructions = [
             'Reflexion',
             'How many coins can you',
-            'click in 10 seconds?',
+            'click in 20 seconds?',
             '',
             'Click to Start!'
         ];

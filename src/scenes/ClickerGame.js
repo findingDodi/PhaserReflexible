@@ -8,7 +8,7 @@ export class ClickerGame extends Scene {
     scoreText = null;
     timeText = null;
     timer = null;
-    targetScale = 1;
+    targetScale = 0;
     
     constructor() {
         super('ClickerGame');
@@ -19,10 +19,14 @@ export class ClickerGame extends Scene {
 
         this.scoreText = this.add.text(32, 32, 'Targets: 0', Utils.textMedium).setDepth(1);
         this.timeText = this.add.text(1024 - 32, 32, 'Time: 10', Utils.textMedium).setOrigin(1, 0).setDepth(1);
+        
+        this.targetScale = 1;
+        this.score = 0;
+        this.targets = [];
 
         //  10-second timer starts automatically 
         this.timer = this.time.addEvent({ 
-            delay: 10000, 
+            delay: 20000, 
             callback: () => this.gameOver() 
         });
 
