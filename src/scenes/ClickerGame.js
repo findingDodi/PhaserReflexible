@@ -1,7 +1,8 @@
 import { Scene } from 'phaser';
+import {Utils} from "../Utils.js";
 
 export class ClickerGame extends Scene {
-    constructor () {
+    constructor() {
         super('ClickerGame');
     }
 
@@ -9,20 +10,12 @@ export class ClickerGame extends Scene {
         this.score = 0;
         this.coins = [];
 
-        const textStyle = { 
-            fontFamily: 'Arial Black', 
-            fontSize: 38, 
-            color: '#ffffff', 
-            stroke: '#000000', 
-            strokeThickness: 8 
-        };
-
         this.add.image(512, 384, 'background');
 
-        this.scoreText = this.add.text(32, 32, 'Coins: 0', textStyle).setDepth(1);
-        this.timeText = this.add.text(1024 - 32, 32, 'Time: 10', textStyle).setOrigin(1, 0).setDepth(1);
+        this.scoreText = this.add.text(32, 32, 'Coins: 0', Utils.textMedium).setDepth(1);
+        this.timeText = this.add.text(1024 - 32, 32, 'Time: 10', Utils.textMedium).setOrigin(1, 0).setDepth(1);
 
-        //  Our 10 second timer. It starts automatically when the scene is created.
+        //  10-second timer starts automatically 
         this.timer = this.time.addEvent({ 
             delay: 10000, 
             callback: () => this.gameOver() 
@@ -85,7 +78,7 @@ export class ClickerGame extends Scene {
             this.registry.set('highscore', this.score);
         }
 
-        //  Swap to the GameOver scene after a 2 second delay
+        //  Swap to the GameOver scene after a 2-second delay
         this.time.delayedCall(2000, () => this.scene.start('GameOver'));
     }
 }
