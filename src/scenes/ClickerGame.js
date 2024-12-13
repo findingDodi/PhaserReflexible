@@ -4,10 +4,11 @@ import {Utils} from "../Utils.js";
 export class ClickerGame extends Scene {
     
     score = 0;
-    coins = [];
+    targets = [];
     scoreText = null;
     timeText = null;
     timer = null;
+    targetScale = 1;
     
     constructor() {
         super('ClickerGame');
@@ -16,7 +17,7 @@ export class ClickerGame extends Scene {
     create() {
         this.add.image(512, 384, 'background');
 
-        this.scoreText = this.add.text(32, 32, 'Coins: 0', Utils.textMedium).setDepth(1);
+        this.scoreText = this.add.text(32, 32, 'Targets: 0', Utils.textMedium).setDepth(1);
         this.timeText = this.add.text(1024 - 32, 32, 'Time: 10', Utils.textMedium).setOrigin(1, 0).setDepth(1);
 
         //  10-second timer starts automatically 
@@ -26,37 +27,41 @@ export class ClickerGame extends Scene {
         });
 
         this.physics.world.setBounds(0, -400, 1024, 768 + 310);
+        
+        this.dropTarget();
 
-        for (let i = 0; i < 32; i++) {
-            this.dropCoin();
-        }
-
-        this.input.on('gameobjectdown', (pointer, gameObject) => this.clickCoin(gameObject));
+        this.input.on('gameobjectdown', (pointer, gameObject) => this.clickTarget(gameObject));
     }
 
-    dropCoin() {
+    dropTarget() {
         let x = Phaser.Math.Between(128, 896);
         let y = Phaser.Math.Between(0, -400);
-        let coin = this.physics.add.sprite(x, y, 'coin').play('rotate');
+        let target = this.physics.add.sprite(x, y, 'target');
+        target.setScale(this.getTargetScale());
+        //this.targetScale -= 0.5; 
 
-        coin.setVelocityX(Phaser.Math.Between(-400, 400));
-        coin.setCollideWorldBounds(true);
-        coin.setBounce(0.9);
-        coin.setInteractive();
+        target.setVelocityX(Phaser.Math.Between(-400, 400));
+        target.setCollideWorldBounds(true);
+        target.setBounce(0.9);
+        target.setInteractive();
 
-        this.coins.push(coin);
+        this.targets.push(target);
     }
 
-    clickCoin(coin) {
-        coin.disableInteractive();
-        coin.setVelocity(0, 0);
-        coin.play('vanish');
-        coin.once('animationcomplete-vanish', () => coin.destroy());
+    clickTarget(target) {
+        target.disableInteractive();
+        target.setVelocity(0, 0);
+        target.destroy();
         
         this.score++;
-        this.scoreText.setText('Coins: ' + this.score);
+        this.scoreText.setText('Targets: ' + this.score);
         
-        this.dropCoin();
+        this.dropTarget();
+    }
+    
+    getTargetScale() {
+        let targetScale = this.targetScale - (this.score / 5);
+        return Math.max(targetScale, 0.08);
     }
 
     update() {
@@ -64,10 +69,9 @@ export class ClickerGame extends Scene {
     }
 
     gameOver() {
-        this.coins.forEach((coin) => {
-            if (coin.active) {
-                coin.setVelocity(0, 0);
-                coin.play('vanish');
+        this.targets.forEach((targets) => {
+            if (targets.active) {
+                targets.setVelocity(0, 0);
             }
         });
 
